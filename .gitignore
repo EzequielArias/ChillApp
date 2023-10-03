@@ -3,5 +3,7 @@ mongo-data/
 
 node_modules/
 
+ChillAppFrontend/node_modules/
+
 dist/
 build/

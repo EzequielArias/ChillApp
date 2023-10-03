@@ -15,7 +15,6 @@ export const AppRouter = () => {
             { 
               nav.map((r, i) => {
                 if(r.isAdmin && r.isAuthenticated && isAdmin && isAuthenticated){
-                  console.log(r.name)
                   return <Route path={r.path} element={<r.element/>} key={i}/>
                 }
                 else if(r.isAuthenticated && isAuthenticated)
