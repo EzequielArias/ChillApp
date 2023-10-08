@@ -1,3 +1,4 @@
+import { ChatModal } from '.';
 import {
   ChatSlotContainer,
   ChatIMG,
@@ -9,9 +10,16 @@ import {
   HourContainer
 } from '../styled-components';
 
+import { useState } from 'react';
+
 export const ChatSlot = () => {
+
+  const [ modal, setModal ] = useState<boolean>(false)
+
   return (
-    <ChatSlotContainer>
+    <>
+    { modal && <ChatModal setModal={setModal}/>}
+    <ChatSlotContainer onClick={() => setModal(true)}>
       <ImgContainer>
        <ChatIMG 
         alt='' 
@@ -26,5 +34,6 @@ export const ChatSlot = () => {
         <Hour>10 : 15</Hour>
       </HourContainer>
     </ChatSlotContainer>
+    </>
   )
 }
