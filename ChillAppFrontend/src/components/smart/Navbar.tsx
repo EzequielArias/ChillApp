@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { BsThreeDotsVertical } from 'react-icons/bs';
+import { useLocalStorage } from '../../hooks';
 
 export const Navbar = () => {
 
@@ -55,6 +56,7 @@ export const Navbar = () => {
       })
     }
   }
+  useLocalStorage()
   // Cambiar las propiedades de styledcomponents solo a un isActive : boolean;
   return (
     <NavbarContainer>

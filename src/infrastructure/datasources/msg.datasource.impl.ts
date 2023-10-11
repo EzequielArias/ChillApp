@@ -1,4 +1,4 @@
-import { MessageDto, MessageEntity } from "../../domain";
+import { ChatEntity, MessageDto, MessageEntity, ChatsDto} from "../../domain";
 import { MessageDatasource } from "../../domain/datasource/";
 import { ChatModel, MsgSchema } from "../../databases/mongodb";
 import { MessageMapper } from "../mappers";
@@ -7,6 +7,15 @@ import { MessageMapper } from "../mappers";
 export class MessageDatasourceImpl implements MessageDatasource {
 
     constructor(){}
+
+    async getChats( ChatsDto : ChatsDto ): Promise<ChatEntity[]> {
+
+        const { userUUID } = ChatsDto;
+
+        const myChats : any = await ChatModel.find({ owners : userUUID });
+
+        return MessageMapper.chatEntityFromObject( myChats );
+    }
 
     async sendMsg(MessageDto: MessageDto): Promise<MessageEntity> {
        

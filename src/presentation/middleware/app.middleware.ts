@@ -23,9 +23,7 @@ export class AuthMiddleware {
 
         const user = await UserModel.findById(payload.id);
         if( !user ) return res.status(401).json({ error : 'Credentials Invalid'})
-
         req.body.user = user;
-
         next();
 
         }catch(err){

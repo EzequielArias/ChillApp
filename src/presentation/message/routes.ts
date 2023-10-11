@@ -3,8 +3,7 @@ import { MessageDatasourceImpl } from "../../infrastructure/datasources/msg.data
 import { MessageRepositoryImpl } from "../../infrastructure/repositories/msg.repository.impl";
 import { MessageController } from "./controller";
 import { Server as SocketIo } from "socket.io";
-
-// Hay que implementar los sockets
+import { AuthMiddleware } from "../middleware/app.middleware";
 
 export class MessageRoutes {
 
@@ -17,12 +16,13 @@ export class MessageRoutes {
             messageRepository
         )
 
-        router.post('/send', controller.sendMsg)
+        router.post('/send-msg', controller.sendMsg)
+
+        router.get('/get-chats', AuthMiddleware.validateJWT ,controller.getChats)
 
         return router;
     }
 
-    // Es posible utilizar io.use como app.use con similares funcionalidades
     static get sockets() : any{
         const io = new SocketIo()
 

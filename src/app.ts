@@ -3,7 +3,6 @@ import { MongoDatabase } from "./databases/mongodb"
 import { AppRoutes } from "./presentation/routes"
 import { Server } from "./presentation/server"
 
-
 (() => {
     main()
 })()

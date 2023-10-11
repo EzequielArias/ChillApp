@@ -1,9 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit";
-import io, { ManagerOptions, Socket, SocketOptions } from 'socket.io-client';
-
-const socket = io("http://localhost:5555");
-
 
 interface MessageText {
     from : string;
@@ -11,14 +7,22 @@ interface MessageText {
     text : string;
 }
 
+interface ChatSlot {
+    chatId : string;
+    userChat : {
+        id : string;    // si el id es igual al from del mensaje significa que el mensaje no es nuestro sino de la persona con la que estamos chateando
+        name : string; 
+        email : string;
+        messages : MessageText[]
+   } 
+} 
+
 interface Chat {
-   socket : Socket<ManagerOptions, SocketOptions>;
-   messages : MessageText[]
+   chat : ChatSlot[]
 }
 
 const UserState : Chat = {
-    socket : socket ,
-    messages : []
+    chat : []
 }
 
 export const ChatSlice  = createSlice({
@@ -26,9 +30,24 @@ export const ChatSlice  = createSlice({
     initialState : UserState,
     reducers : {
         getMessages : (state, action : PayloadAction<any> ) => {
+            // Buscar el chat por index y como ya tenemos o deberiamos tener la data extraida del backend ir agregando a cada array de messages
+            const chatIndex = state.chat.findIndex((el) => {
+                el.chatId === action.payload.chatId
+            }),
+            selectedChat = state.chat[chatIndex],
+            modifiedChat = selectedChat.userChat.messages = action.payload.messages
+
+            const returnChat = [...state.chat][chatIndex] = modifiedChat;
+
             return {
                 ...state,
-                messages : [ ...state.messages, action.payload ]
+                chat : returnChat
+            }
+        },
+
+        getChats : ( state, action : PayloadAction<any> ) => {
+            return {
+                ...state
             }
         }
     }

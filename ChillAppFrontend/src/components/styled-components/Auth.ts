@@ -14,7 +14,7 @@ export const AuthContainer = styled.div
     width : 100%;
 `
 
-export const AuthForm = styled.form 
+export const AuthForm = styled.div 
 `
     display : flex;
     flex-direction : column;

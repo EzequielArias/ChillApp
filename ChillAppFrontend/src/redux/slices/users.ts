@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit";
+import { AuthResponse } from "../../adapter";
 
 interface User {
     image : string;
     email : string;
-    nickname : string;
+    name : string;
     isAuthenticated : boolean;
     isAdmin : boolean;
 }
@@ -12,7 +13,7 @@ interface User {
 const UserState : User = {
     image : "",
     email : "",
-    nickname : "",
+    name : "",
     isAdmin : false,
     isAuthenticated : false
 }
@@ -22,20 +23,21 @@ export const UsersSlice = createSlice({
     initialState : UserState,
     reducers : {
 
-        login : ( state, action : PayloadAction<User> ) => {
+        login : ( state, action : PayloadAction<AuthResponse> ) => {
             return {
                 ...state,
                 isAdmin : true,
                 isAuthenticated : true,
-                nickname : action.payload.nickname,
-                email : action.payload.email
+                name : action.payload.user.name,
+                email : action.payload.user.email
             }
         },
 
-        logout : (state, action : PayloadAction<any>) => {
+        logout : ( state ) => {
             return {
                 ...state,
-                isAuthenticated : false
+                isAuthenticated : false,
+                isAdmin : false
             }
         }
     }

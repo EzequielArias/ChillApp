@@ -12,20 +12,29 @@ import {
   } from "../../components/styled-components"
 import { useState, useRef, useEffect } from "react"
 import { Avatars } from '../../assets'
+import { useFetchAndLoad, useForm, useLocalStorage } from "../../hooks";
+import { LogIn, Register } from "../../services";
+import { login } from "../../redux/slices";
+import { useDispatch } from "react-redux";
+import { AuthAdapter } from "../../adapter";
 
 export const Auth = () => {
 
   const [ auth, setAuth ] = useState(false);
   const [ modal , setModal ] = useState(false)
   const [ currentIndexCard, setCurrentIndexCard] = useState(0)
-  const [ data, setData ] = useState({
-    name : "",
+  const dispatch = useDispatch();
+
+
+  const initialState = {
+    password : "",
     email : "",
     avatar : ""
-  });
+  }
 
-  const listRef = useRef<HTMLUListElement>(null)
-
+  const { form, formChange, setForm } = useForm(initialState);
+  const { loading, callEndpoint } = useFetchAndLoad();
+  const listRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
     if(listRef.current){
@@ -40,11 +49,7 @@ export const Auth = () => {
           })
         }}
       }
-
-    
-
   },[currentIndexCard])
-
 
   const handleIndexCard = (action : string) => {
     if(action === 'foward')
@@ -60,29 +65,43 @@ export const Auth = () => {
     }
   }
 
-  const handleChange = (e : any ) => {
-
+  const handleImage = (e : any) => {
     if(!e.target.name){
-      setModal(false)
-      setData(prev => {
+      setForm((prev) => {
         return {
           ...prev,
           avatar : Avatars[currentIndexCard]
         }
       })
-      return
+      setModal(false)
     }
-
-    setData(prev => {
-      return {
-        ...prev,
-        [e.target.name] : e.target.value
-      }
-    })
   }
 
-  const handleSubmit = (e : any) => {
-    setModal(true)
+  const handleSubmit = async (e : any) => {
+    e.preventDefault();
+    
+    const formData = {
+        name : form.email.split("@")[0],
+        email: form.email,
+        password: form.password
+      };
+
+    const jsonData = JSON.stringify(formData);
+
+    let tk : string;
+    if(auth)
+    {
+      const { data } = await callEndpoint(Register(form));
+      dispatch(login(AuthAdapter(data)));
+      tk = data.token;
+    }else{
+      const { data } = await callEndpoint(LogIn(jsonData))
+      dispatch(login(AuthAdapter(data)));
+      tk = data.token;
+    }
+
+    useLocalStorage(tk);
+
   }
 
   return (
@@ -97,7 +116,7 @@ export const Auth = () => {
             return (<>
             ( 
             <li key={i}>
-              <ModalAvatars src={el} alt="" onClick={handleChange}/>
+              <ModalAvatars src={el} alt="" onClick={handleImage}/>
             </li> 
             )</>)
           })
@@ -110,17 +129,17 @@ export const Auth = () => {
           type="email" 
           name="email" 
           placeholder=" Email"
-          onChange={handleChange}
-          value={data.email}
+          onChange={formChange}
+          value={form.email}
           />
         <AuthInputs
          type="password" 
-         name="pass"
+         name="password"
          placeholder="password"
-         onChange={handleChange}
-         value={data.name}
+         onChange={formChange}
+         value={form.password}
          />
-        <AuthButton>{auth ? 'Registrarse'  : 'Iniciar sesion' }</AuthButton>
+        <AuthButton onClick={handleSubmit} >{auth ? 'Registrarse'  : 'Iniciar sesion' }</AuthButton>
         <AuthAdvice 
           onClick={() => setModal(true)}
           style={auth ? { display : 'block' } : { display : 'none' }}

@@ -8,7 +8,7 @@ export const Chat = () => {
     <div>
       {
         arr.map((el,i) => {
-          return (<ChatSlot key={i}/>)
+          return (<ChatSlot key={i} />)
         })
       }
     </div>

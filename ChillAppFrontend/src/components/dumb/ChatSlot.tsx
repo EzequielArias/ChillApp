@@ -1,4 +1,4 @@
-import { ChatModal } from '.';
+import { ChatModal } from '../smart';
 import {
   ChatSlotContainer,
   ChatIMG,
@@ -14,7 +14,7 @@ import { useState } from 'react';
 
 export const ChatSlot = () => {
 
-  const [ modal, setModal ] = useState<boolean>(false)
+  const [ modal, setModal ] = useState<boolean>(false);
 
   return (
     <>

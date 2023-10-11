@@ -1,5 +1,11 @@
 import { Response, Request } from "express";
-import { CustomErr, Message, MessageDto, MessageRepository } from "../../domain";
+import { ChatsDto, 
+        CustomErr, 
+        Message, 
+        MessageDto, 
+        MessageRepository,
+        Chat
+    } from "../../domain";
 
 
 export class MessageController {
@@ -28,6 +34,17 @@ export class MessageController {
         new Message(this.messageRepository)
         .execute( messageDto! )
         .then(( data ) => res.json(data) )
+        .catch( error => this.handleError( error, res ));
+    }
+
+    getChats = ( req : Request, res : Response ) => {
+        const [ error, chatsDto ] = ChatsDto.create( req.body );
+
+        if( error ) return res.status(400).json({ error });
+
+        new Chat( this.messageRepository )
+        .execute( chatsDto! )
+        .then(( data ) => res.json( data ) )
         .catch( error => this.handleError( error, res ));
     }
 }
