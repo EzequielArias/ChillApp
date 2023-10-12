@@ -7,15 +7,19 @@ import { ModalBoxContainer,
          ModalInput, 
          ModalKeyboardContainer, 
          ModalMainBox, 
+         ModalMessage, 
+         ModalMsgContainer, 
+         ModalPersonName, 
          ModalRollBack, 
-         ModalSendButton 
+         ModalSendButton, 
+         ModalTextBallon
         } from "../styled-components/ChatModal";
 import { useEffect } from 'react';
 //import { useForm } from '../../hooks';
 import { useSelector } from 'react-redux';
 import { StoreType } from '../../redux/store';
 
-const socket = io("http://localhost:5555");
+//const socket = io("http://localhost:5555");
 
 export const ChatModal = ({ setModal } : { setModal : React.Dispatch<React.SetStateAction<boolean>>}) => {
  
@@ -27,20 +31,26 @@ export const ChatModal = ({ setModal } : { setModal : React.Dispatch<React.SetSt
     text : ""
   }
 
+  const arr = [
+    {
+      user : false,
+      message : "hola que tal ?"
+    },
+    {
+      user : true,
+      message : "Todo chill vos ?"
+    },
+    {
+      user : false,
+      message : "Pinta algo hoy ? "
+    }
+  ]
+
   //const { form, formChange } = useForm(initialState);
 
-  const sendMessage = () => {}
-
-  useEffect(() => {
-    
-    socket.on('receiveMessage', () => {
-
-    })
-
-    return () => {
-      socket.off('receiveMessage');
-    }
-  },[])
+  const sendMessage = () => {
+  //  socket.emit('is-typing', "MENSAJE DEL FRONT-END")
+  }
 
   return (
     <ModalBoxContainer>
@@ -48,12 +58,25 @@ export const ChatModal = ({ setModal } : { setModal : React.Dispatch<React.SetSt
 
           <ModalHeader>
             <ModalRollBack onClick={() => setModal(false)}> <AiOutlineArrowLeft/> </ModalRollBack>
+            <ModalPersonName>Ezequiel Arias</ModalPersonName>
             <ModalIMG src='https://static.vecteezy.com/system/resources/thumbnails/002/002/403/small/man-with-beard-avatar-character-isolated-icon-free-vector.jpg' alt='Pwned'/>
           </ModalHeader>
 
+          <ModalMsgContainer>
+            {
+              arr.map((msg, index) => {
+                return (
+                  <ModalTextBallon key={index} isMyMessage={msg.user}>
+                    <ModalMessage> {msg.message} </ModalMessage>
+                  </ModalTextBallon>
+                )
+              })
+            }
+          </ModalMsgContainer>
+
           <ModalKeyboardContainer>
             <ModalInput/>
-            <ModalSendButton> <BiSolidRightArrow/> </ModalSendButton>
+            <ModalSendButton onClick={sendMessage}> <BiSolidRightArrow/> </ModalSendButton>
           </ModalKeyboardContainer>
 
         </ModalMainBox>

@@ -56,7 +56,8 @@ export const Navbar = () => {
       })
     }
   }
-  useLocalStorage()
+  
+  //useLocalStorage()
   // Cambiar las propiedades de styledcomponents solo a un isActive : boolean;
   return (
     <NavbarContainer>

@@ -1,7 +1,7 @@
 import express, { Router } from 'express';
 import http from 'http';
-import { Server as SocketServer} from 'socket.io';
 import cors from 'cors';
+import { Server as SocketIo  } from 'socket.io';
 
 interface Options {
     port : number;
@@ -13,20 +13,18 @@ export class Server {
     public readonly app = express();
     private readonly port : number;
     private readonly routes : Router;
-    private httpServer: http.Server;
-    private io: SocketServer;
+    private readonly httpService : http.Server = http.createServer(this.app);
+    private readonly io  = new SocketIo( this.httpService , {
+        cors : {
+            origin : "http://localhost:5173"
+        }
+    })
 
     constructor(options : Options)
     {
         const { port, routes } = options;
         this.port = port;
         this.routes = routes;
-        this.httpServer = http.createServer(this.app);
-        this.io = new SocketServer(this.httpServer, {
-            cors: {
-                origin: "http://localhost:5173"
-            }
-        });
     }
 
     async start(){
@@ -44,17 +42,15 @@ export class Server {
         })
 
 
-        this.httpServer.listen(5555, () => {
-            console.log(`CONSOLOGUEANDO EL PUERTO 5555`);
-        });
+        this.io.on('connection', ( socket ) => {
+            console.log(socket.id)
 
-        this.io.on('connect', ( socket ) => {
-            
-            socket.on( 'message' ,( data ) => {
-                console.log( data )
-                console.log( socket.id )
-            });
-            
+            socket.on('is-typing', ( data ) => {
+                console.log("Del evento is Typing llego : \n" + data )
+                return true
+            })
         })
+
+        this.io.listen(5555)
     }
 }

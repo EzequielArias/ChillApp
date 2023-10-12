@@ -18,13 +18,15 @@ const userSchema = new Schema({
         required : [true, 'Password is required']
     },
 
-    img : {
-        type : String,
-    },
-
     roles : {
         type : [String],
         enum : ['USER_ROLE', 'ADMIN_ROLE']
+    },
+
+    img : {
+        type : String,
+        enum : ['men1' , 'men2', 'men3', 'women1', 'women2', 'women3' ],
+        required : false
     }
 })
 

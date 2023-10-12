@@ -24,8 +24,10 @@ export class RegisterUser implements RegisterUserUseCase {
     ){}
 
     async execute(registerUserDto: RegisterUserDto): Promise<any> {
+
         // Crear usuario,
         const user = await this.authRepository.register(registerUserDto);
+        
         // Token
         const token = await this.signUser({ id : user.id}, '2h');
         if( !token ) throw CustomErr.internalServerError('Something went wrong');

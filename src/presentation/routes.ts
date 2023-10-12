@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { AuthRoutes } from "./auth/routes";
 import { MessageRoutes } from "./message/routes";
-
+import http from 'http';
 
 export class AppRoutes {
     static get routes() : Router {
@@ -15,10 +15,4 @@ export class AppRoutes {
         return router;
     }
 
-    static get sockets(){
-        const socket : any = null;
-        
-        // Tengo que retornar el httServer
-        return 
-    }
 }
