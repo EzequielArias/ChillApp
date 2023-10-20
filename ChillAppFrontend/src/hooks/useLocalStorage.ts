@@ -1,31 +1,46 @@
-import { redirect } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout, login } from "../redux/slices";
 import { GetUserAdapter } from "../adapter";
 import { GetUser } from "../services";
 import { useFetchAndLoad } from ".";
+import { useLocation } from "react-router-dom";
 
-export const useLocalStorage = async ( jwtToken?  : string ) => {
+export const useLocalStorage = () => {
+
+        const location = useLocation();
         const dispatch = useDispatch();
-
+        const { callEndpoint } = useFetchAndLoad()
         let token = localStorage.getItem('jwt');
+       
+        const getUserData = async ( jwtToken?  : string ) => {
 
-        const { callEndpoint } = useFetchAndLoad();
+            if(location.pathname.includes("/auth")) return null;
 
-        const { data } = await callEndpoint(GetUserAdapter(GetUser( token! )))
+            try {
 
-        if(jwtToken){// Si entra por el login o register
-            localStorage.setItem('jwt', jwtToken);
-            return true
-        }
-        
-        if(!token || !data.error){ // Si se carga desde cualquier lugar y el token esta vencido
-            dispatch(logout())
-            localStorage.removeItem('jwt');
-            return redirect('/auth');
-        }
+                const { data } = await callEndpoint(GetUser(token!))
+                dispatch(login(GetUserAdapter( data )))
 
-    dispatch(login( data ))
-    return true;
-    
+                if(jwtToken){ // Si entra por el login o register
+                    console.log('AGREGANDO TOKEN')
+                    localStorage.setItem('jwt', jwtToken);
+                    window.location.href = "/"
+                    return true
+                }
+
+            } catch (error) {
+
+                   dispatch(logout())
+                   localStorage.removeItem('jwt');
+                   console.log('REDIRIGIENDO AL AUTH')
+                   if(location.pathname.includes("/auth")) return ""
+                   else window.location.href = "/auth";
+
+            }
+
+        } 
+
+       return {
+        getUserData
+       }
 }

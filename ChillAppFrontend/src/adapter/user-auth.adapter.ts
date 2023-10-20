@@ -24,7 +24,8 @@ export const AuthAdapter = ( data : AuthResponse ) => {
 }
 
 export const GetUserAdapter = ( data : any ) => {
-    if(data.error) return data.error
+    console.log(data)
+    if(data.error) return data
 
     return {
         user : {

@@ -12,11 +12,12 @@ import {
   } from "../../components/styled-components"
 import { useState, useRef, useEffect } from "react"
 import { Avatars } from '../../assets'
-import { useFetchAndLoad, useForm, useLocalStorage } from "../../hooks";
+import { useFetchAndLoad, useForm } from "../../hooks";
 import { LogIn, Register } from "../../services";
 import { login } from "../../redux/slices";
 import { useDispatch } from "react-redux";
 import { AuthAdapter } from "../../adapter";
+import { useNavigate } from "react-router-dom";
 
 export const Auth = () => {
 
@@ -24,7 +25,7 @@ export const Auth = () => {
   const [ modal , setModal ] = useState(false)
   const [ currentIndexCard, setCurrentIndexCard] = useState(0)
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
 
   const initialState = {
     password : "",
@@ -50,6 +51,8 @@ export const Auth = () => {
         }}
       }
   },[currentIndexCard])
+
+  const succesfullLogIn = () => navigate("/");
 
   const handleIndexCard = (action : string) => {
     if(action === 'foward')
@@ -99,9 +102,8 @@ export const Auth = () => {
       dispatch(login(AuthAdapter(data)));
       tk = data.token;
     }
-
-    useLocalStorage(tk);
-
+    localStorage.setItem('jwt', tk);
+    return succesfullLogIn();
   }
 
   return (

@@ -7,8 +7,12 @@ export const GetChats = ( token : string ) => {
 
     const controller = LoadAbort();
 
+    const headers = {
+        Authorization : `Bearer ${token}`
+    }
+
     return {
-        call : axios.post(`${url}/messages`),
+        call : axios.get(`${url}/chat/get-chats`, { headers }),
         controller
     }
 }

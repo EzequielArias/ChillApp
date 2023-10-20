@@ -3,6 +3,7 @@ import { PayloadAction } from "@reduxjs/toolkit";
 import { AuthResponse } from "../../adapter";
 
 interface User {
+    id : string;
     image : string;
     email : string;
     name : string;
@@ -11,6 +12,7 @@ interface User {
 }
 
 const UserState : User = {
+    id : "",
     image : "",
     email : "",
     name : "",
@@ -29,7 +31,8 @@ export const UsersSlice = createSlice({
                 isAdmin : true,
                 isAuthenticated : true,
                 name : action.payload.user.name,
-                email : action.payload.user.email
+                email : action.payload.user.email,
+                id : action.payload.user.id
             }
         },
 

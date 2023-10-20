@@ -15,6 +15,6 @@ interface Message {
   
 export interface ChatEntity {
     _id : Types.ObjectId;
-    owners: [ Types.ObjectId, Types.ObjectId ]; // Tipo debe coincidir con el tipo de ObjectId utilizado en tu User model
+    owners: [ Types.ObjectId, Types.ObjectId ] | any; // Tipo debe coincidir con el tipo de ObjectId utilizado en tu User model
     messages: Message[];
 }

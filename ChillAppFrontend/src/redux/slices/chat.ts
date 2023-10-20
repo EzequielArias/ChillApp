@@ -2,8 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit";
 
 interface MessageText {
-    from : string;
-    date : string;
+    user : string;
     text : string;
 }
 
@@ -18,39 +17,41 @@ interface ChatSlot {
 } 
 
 interface Chat {
-   chat : ChatSlot[]
+   chat : ChatSlot[],
+   currentOpenChat : MessageText[]
 }
 
 const UserState : Chat = {
-    chat : []
+    chat : [],
+    currentOpenChat : []
 }
 
 export const ChatSlice  = createSlice({
     name : 'chat',
     initialState : UserState,
     reducers : {
-        getMessages : (state, action : PayloadAction<any> ) => {
-            // Buscar el chat por index y como ya tenemos o deberiamos tener la data extraida del backend ir agregando a cada array de messages
-            const chatIndex = state.chat.findIndex((el) => {
-                el.chatId === action.payload.chatId
-            }),
-            selectedChat = state.chat[chatIndex],
-            modifiedChat = selectedChat.userChat.messages = action.payload.messages
 
-            const returnChat = [...state.chat][chatIndex] = modifiedChat;
+        getMessages : ( state, action : PayloadAction<any> ) => {
+            
+            const selectedChatMessages = state.chat.find( el => el.chatId === action.payload.chatId )
+            
+            if(!selectedChatMessages) return {
+                ...state
+            }
 
             return {
                 ...state,
-                chat : returnChat
+                currentOpenChat : selectedChatMessages.userChat.messages
             }
         },
 
         getChats : ( state, action : PayloadAction<any> ) => {
             return {
-                ...state
+               ...state,
+               chat : action.payload
             }
         }
     }
 })
 
-export const { getMessages } = ChatSlice.actions;
+export const { getMessages, getChats } = ChatSlice.actions;

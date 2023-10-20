@@ -12,7 +12,7 @@ import {
 
 import { useState } from 'react';
 
-export const ChatSlot = () => {
+export const ChatSlot = ( { name, message } : { name : string, message : any[] } ) => {
 
   const [ modal, setModal ] = useState<boolean>(false);
 
@@ -27,8 +27,8 @@ export const ChatSlot = () => {
         />
       </ImgContainer>
       <UserInfoContainer>
-       <UserName>@Bushimura</UserName>
-       <Message>Qfmsdjgnisngoiagnioangjoingjioangoanognashibgyyuvyuvygubgybgyuvyvyvgbyuvbgiv</Message>
+       <UserName>@{ name }</UserName>
+       <Message>{message[message.at(-1)]}</Message>
       </UserInfoContainer>
       <HourContainer>
         <Hour>10 : 15</Hour>

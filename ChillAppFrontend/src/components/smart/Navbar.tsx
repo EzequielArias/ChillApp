@@ -6,8 +6,7 @@ import {
     SectionItem,
     ToolsContainer
 } from '../styled-components';
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect, useState } from 'react';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { useLocalStorage } from '../../hooks';
@@ -20,7 +19,7 @@ export const Navbar = () => {
     llamadas : false
   })
 
-  const dispatch = useDispatch();
+  const { getUserData } = useLocalStorage()
 
   const handleSelected = (item : string) => {
     if(item === 'chat')
@@ -57,8 +56,16 @@ export const Navbar = () => {
     }
   }
   
-  //useLocalStorage()
-  // Cambiar las propiedades de styledcomponents solo a un isActive : boolean;
+  useEffect(() => {
+    
+    getUserData()
+    
+    return () => {
+
+    }
+
+  },[])
+
   return (
     <NavbarContainer>
         <InfoContainer>

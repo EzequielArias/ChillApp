@@ -1,5 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 
+
 const messageSchema = new Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
@@ -10,8 +11,14 @@ const messageSchema = new Schema({
 
 const chatSchema = new Schema({
     owners : {
-        type : [mongoose.Types.ObjectId, mongoose.Types.ObjectId],
-        ref : 'User'
+        owner1 : {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : 'User'
+        },
+        owner2 : {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : 'User'
+        }
     },
 
     messages : {
