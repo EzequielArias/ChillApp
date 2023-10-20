@@ -7,6 +7,7 @@ export class MessageDto {
     ){}
 
     static create(object : {[key : string] : any}) : [string?, MessageDto?]{
+
         const { text, senderId, receiverId } = object;
 
         if( !senderId || !receiverId ) return ["Credentials invalid"];

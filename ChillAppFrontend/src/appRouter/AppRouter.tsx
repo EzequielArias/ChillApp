@@ -3,10 +3,33 @@ import { nav } from "./navigation"
 import { useSelector } from "react-redux"
 import { StoreType } from "../redux/store"
 import { Navbar } from "../components"
+import { useLocalStorage } from "../hooks"
+import { useEffect } from "react"
 
 export const AppRouter = () => {
 
-  const { isAdmin, isAuthenticated } = useSelector((state : StoreType) => state.user);
+  const { isAdmin, isAuthenticated } = useSelector((state : StoreType) => state.user )
+  const { isLoaded } = useSelector((state : StoreType) => state.rendering )
+
+  const { getUserData } = useLocalStorage()
+
+  useEffect(() => {
+    
+    getUserData()
+    return () => {
+
+    }
+
+  },[])
+
+
+  if(!isLoaded){
+    return (
+      <h1>
+        LOADING COMPONENTS...
+      </h1>
+    )
+  }
 
   return (
     <>

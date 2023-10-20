@@ -14,12 +14,13 @@ export class Message implements MessageUserCase {
 
     async execute( MessageDto : MessageDto ) : Promise<any> {
 
+        
         const msg = await this.MsgRespository.sendMsg( MessageDto );
-
+        
         return {
             message : {
                 owners : [msg.senderId, msg.receiverId],
-                text : msg.text,
+                text : MessageDto.text,
                 date : new Date()        
             }
         }

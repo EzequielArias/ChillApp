@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { logout, login } from "../redux/slices";
+import { logout, login, loaded } from "../redux/slices";
 import { GetUserAdapter } from "../adapter";
 import { GetUser } from "../services";
 import { useFetchAndLoad } from ".";
@@ -14,12 +14,16 @@ export const useLocalStorage = () => {
        
         const getUserData = async ( jwtToken?  : string ) => {
 
-            if(location.pathname.includes("/auth")) return null;
+            if(location.pathname.includes("/auth")){
+                dispatch(loaded())
+                return null;
+            }
 
             try {
 
                 const { data } = await callEndpoint(GetUser(token!))
                 dispatch(login(GetUserAdapter( data )))
+                dispatch(loaded())
 
                 if(jwtToken){ // Si entra por el login o register
                     console.log('AGREGANDO TOKEN')
@@ -32,7 +36,6 @@ export const useLocalStorage = () => {
 
                    dispatch(logout())
                    localStorage.removeItem('jwt');
-                   console.log('REDIRIGIENDO AL AUTH')
                    if(location.pathname.includes("/auth")) return ""
                    else window.location.href = "/auth";
 

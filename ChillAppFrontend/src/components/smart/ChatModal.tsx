@@ -14,43 +14,66 @@ import { ModalBoxContainer,
          ModalSendButton, 
          ModalTextBallon
         } from "../styled-components/ChatModal";
-import { useEffect } from 'react';
-//import { useForm } from '../../hooks';
-import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useForm } from '../../hooks';
+import { useDispatch, useSelector } from 'react-redux';
 import { StoreType } from '../../redux/store';
+import { MessageText, getMessages } from '../../redux/slices';
 
-//const socket = io("http://localhost:5555");
+const socket = io("http://localhost:5555");
 
-export const ChatModal = ({ setModal } : { setModal : React.Dispatch<React.SetStateAction<boolean>>}) => {
+export const ChatModal = ({ setModal, chatId } : { setModal : React.Dispatch<React.SetStateAction<boolean>>, chatId : string}) => {
  
-  const { chat } = useSelector(( state : StoreType ) => state.chat )
+  const { currentOpenChat, chat } = useSelector(( state : StoreType ) => state.chat );
+  const { id } = useSelector((state : StoreType) => state.user );
+  const { form, formChange } = useForm<{message : string}>({message : ""})
+  const [ typing, setTyping ] = useState(false)
+  const [ data, setData ] = useState<MessageText[]>([]);
+  const dispatch = useDispatch();
 
-  const initialState = {
-    from : "",
-    date : "",
-    text : ""
-  }
+  useEffect(() => {
+    
+    // hay que traer la logica de el reduxSlice y pasarla a un state normal de react
 
-  const arr = [
-    {
-      user : false,
-      message : "hola que tal ?"
-    },
-    {
-      user : true,
-      message : "Todo chill vos ?"
-    },
-    {
-      user : false,
-      message : "Pinta algo hoy ? "
+    const currentChat = chat.find( el => el.chatId === chatId )?.userChat.messages;
+
+    if(currentChat){
+      setData(currentChat)
     }
-  ]
 
-  //const { form, formChange } = useForm(initialState);
+    socket.on('is-typing', (data) => {
+      setTyping(data)
+    })
 
-  const sendMessage = () => {
-  //  socket.emit('is-typing', "MENSAJE DEL FRONT-END")
-  }
+    socket.on('receive-msg', ( data ) => {
+      const json = JSON.parse(data),
+            object = JSON.parse(json)
+
+            setData(prev => {
+
+              const newData = [...prev]
+
+              newData.push({
+                user : object.message.owners[0],
+                text : object.message.text
+              }) 
+
+              return newData
+            })
+    })
+
+    return () => {
+      socket.off('is-typing')
+      socket.off('receive-msg')
+    }
+  },[])
+
+  const sendMessage = () => socket.emit('send-msg', {
+    text : form.message,
+    senderId : id,
+    receiverId : chat.find((el) => el.chatId === chatId )?.userChat.id
+  })
+
 
   return (
     <ModalBoxContainer>
@@ -64,18 +87,25 @@ export const ChatModal = ({ setModal } : { setModal : React.Dispatch<React.SetSt
 
           <ModalMsgContainer>
             {
-              arr.map((msg, index) => {
+              data.map((el, index) => {
                 return (
-                  <ModalTextBallon key={index} isMyMessage={msg.user}>
-                    <ModalMessage> {msg.message} </ModalMessage>
+                  <ModalTextBallon key={index} isMyMessage={id === el.user ? false : true}>
+                    <ModalMessage> {el.text} </ModalMessage>
                   </ModalTextBallon>
                 )
               })
             }
+
+          <span>{ typing ? "escribiendo..." : ""}</span>
           </ModalMsgContainer>
 
           <ModalKeyboardContainer>
-            <ModalInput/>
+            <ModalInput
+            type='text'
+            name='message'
+            value={form.message}
+            onChange={formChange}
+            />
             <ModalSendButton onClick={sendMessage}> <BiSolidRightArrow/> </ModalSendButton>
           </ModalKeyboardContainer>
 

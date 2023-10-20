@@ -12,13 +12,13 @@ import {
 
 import { useState } from 'react';
 
-export const ChatSlot = ( { name, message } : { name : string, message : any[] } ) => {
+export const ChatSlot = ( { name, message, chatId } : { name : string, message : any[], chatId : string } ) => {
 
   const [ modal, setModal ] = useState<boolean>(false);
 
   return (
     <>
-    { modal && <ChatModal setModal={setModal}/>}
+    { modal && <ChatModal setModal={setModal} chatId={chatId} />}
     <ChatSlotContainer onClick={() => setModal(true)}>
       <ImgContainer>
        <ChatIMG 

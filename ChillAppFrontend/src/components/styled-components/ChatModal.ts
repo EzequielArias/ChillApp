@@ -57,6 +57,8 @@ export const ModalMsgContainer = styled.div
     height : 70vh;
     display : flex;
     flex-direction : column;
+    overflow-y : scroll;
+    overflow-x : hidden;
 `
 
 interface TextBallon extends React.HTMLAttributes<HTMLSpanElement> {
@@ -68,6 +70,7 @@ export const ModalTextBallon = styled.span<TextBallon>
     width : 100%;
     display : flex;
     justify-content : ${props => props.isMyMessage ? 'flex-start' : 'flex-end'};
+    margin : 2px;
 `
 
 export const ModalMessage = styled.p 

@@ -53,6 +53,5 @@ export const ChatUserAdapter = ( data : GetChatsResponse, sessionUserId : string
             }
         }
     })
-    
     return cleanedData;
 }

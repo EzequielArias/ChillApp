@@ -9,7 +9,7 @@ export class MessageEntity {
 }
 
 interface Message {
-    user: Types.ObjectId; // Tipo debe coincidir con el tipo de ObjectId utilizado en tu User model
+    user: Types.ObjectId | string; // Tipo debe coincidir con el tipo de ObjectId utilizado en tu User model
     text: string;
 }
   

@@ -27,14 +27,17 @@ export class MessageController {
         return res.status(500).json({ error : 'Internal Server Error'});
     }
 
-    sendMsg = (req : Request, res : Response) => {
-        const [error, messageDto ] = MessageDto.create( req.body );
-        if( error ) return res.status(400).json({ error });
+    sendMsg = ( socketData : any) => {
 
-        new Message(this.messageRepository)
-        .execute( messageDto! )
-        .then(( data ) => res.json(data) )
-        .catch( error => this.handleError( error, res ));
+        const [ error, messageDto ] = MessageDto.create( socketData );
+        if( error ) return JSON.stringify({ error });
+
+        return new Promise(( resolve, reject ) => {
+            new Message( this.messageRepository )
+            .execute( messageDto! )
+            .then(( data ) => resolve(JSON.stringify(data)))
+            .catch( error => reject(JSON.stringify({ error : error.message})) )
+        })
     }
 
     getChats = ( req : Request, res : Response ) => {

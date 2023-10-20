@@ -12,14 +12,13 @@ export const Chat = () => {
   const { callEndpoint, loading } = useFetchAndLoad();
   const dispatch = useDispatch();
   const { id } = useSelector(( state : StoreType ) => state.user);
-  const {  chat } = useSelector(( state : StoreType ) => state.chat);
+  const { chat } = useSelector(( state : StoreType ) => state.chat);
 
   useEffect(() => {
     
     const fillChats = async () => {
-      
-      const { data } = await callEndpoint(GetChats(localStorage.getItem('jwt')!));
-      dispatch(getChats(ChatUserAdapter( data, id )))
+    const { data } = await callEndpoint(GetChats(localStorage.getItem('jwt')!));
+    dispatch(getChats(ChatUserAdapter( data, id )))
       
     }
 
@@ -33,15 +32,18 @@ export const Chat = () => {
   return (
     <div>
       {
-        chat.map((el) => {
+        chat.length === 0 ?
+        (<h1>Cargando compi...</h1>) :
+        (chat.map((el) => {
           return (
           <ChatSlot
             key={el.chatId}
             name={el.userChat.name}
             message={el.userChat.messages}
+            chatId={el.chatId}
           />
           )
-        })
+        })) 
       }
     </div>
   )

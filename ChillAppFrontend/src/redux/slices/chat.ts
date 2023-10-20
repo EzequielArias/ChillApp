@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit";
 
-interface MessageText {
+export interface MessageText {
     user : string;
     text : string;
 }
@@ -32,8 +32,7 @@ export const ChatSlice  = createSlice({
     reducers : {
 
         getMessages : ( state, action : PayloadAction<any> ) => {
-            
-            const selectedChatMessages = state.chat.find( el => el.chatId === action.payload.chatId )
+            const selectedChatMessages = state.chat.find( el => el.chatId === action.payload )
             
             if(!selectedChatMessages) return {
                 ...state
@@ -50,8 +49,32 @@ export const ChatSlice  = createSlice({
                ...state,
                chat : action.payload
             }
+        },
+
+        addMessageToChat: (state, action: PayloadAction<{ chatId: string; message: MessageText }>) => {
+           
+            const { chatId, message } = action.payload;
+            const chatIndex = state.chat.findIndex((el) => el.chatId === chatId);
+          
+            if (chatIndex === -1) {
+              // Chat not found, you might want to handle this case
+              return state;
+            }
+          
+            // Create a copy of the selected chat and add the new message
+            const updatedChat = { ...state.chat[chatIndex] };
+            updatedChat.userChat.messages.unshift(message);
+          
+            // Create a copy of the state with the updated chat
+            const updatedChats = [...state.chat];
+            updatedChats[chatIndex] = updatedChat;
+          
+            return {
+              ...state,
+              chat: [...updatedChats],
+            };
         }
     }
 })
 
-export const { getMessages, getChats } = ChatSlice.actions;
+export const { getMessages, getChats, addMessageToChat } = ChatSlice.actions;

@@ -10,7 +10,7 @@ export interface AuthResponse {
 }
 
 export const AuthAdapter = ( data : AuthResponse ) => {
-    
+
     return {
         user : {
             id : data.user.id,
@@ -24,14 +24,14 @@ export const AuthAdapter = ( data : AuthResponse ) => {
 }
 
 export const GetUserAdapter = ( data : any ) => {
-    console.log(data)
+
     if(data.error) return data
 
     return {
         user : {
-            id : data._id,
-            name : data.name,
-            email : data.email,
+            id : data.user._id,
+            name : data.user.name,
+            email : data.user.email,
         }, 
     }
 }
