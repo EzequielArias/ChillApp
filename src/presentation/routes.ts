@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { AuthRoutes } from "./auth/routes";
 import { MessageRoutes } from "./message/routes";
-import http from 'http';
+import { QueryRoutes } from "./query/routes";
 
 export class AppRoutes {
     static get routes() : Router {
@@ -10,7 +10,9 @@ export class AppRoutes {
         // Define all main routes
         router.use("/auth", AuthRoutes.routes );
 
-        router.use("/chat", MessageRoutes.routes )
+        router.use("/chat", MessageRoutes.routes );
+
+        router.use('/search-bar', QueryRoutes.routes );
 
         return router;
     }

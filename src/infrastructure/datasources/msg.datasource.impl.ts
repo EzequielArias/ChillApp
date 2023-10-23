@@ -24,7 +24,7 @@ export class MessageDatasourceImpl implements MessageDatasource {
     async sendMsg(MessageDto: MessageDto): Promise<MessageEntity> {
        
         const { text, senderId, receiverId } = MessageDto;
-        console.log(text)
+
         const exists = await ChatModel.findOne({
             $or: [
                 {
