@@ -74,7 +74,6 @@ export const ChatModal = ({ setModal, chatId } : { setModal : React.Dispatch<Rea
     receiverId : chat.find((el) => el.chatId === chatId )?.userChat.id
   })
 
-
   return (
     <ModalBoxContainer>
         <ModalMainBox>

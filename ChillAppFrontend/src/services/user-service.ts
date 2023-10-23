@@ -20,9 +20,10 @@ export const LogIn = ( data : string ) => {
 }
 
 interface RegisterPayload {
+    name : string;
     email : string;
     password : string;
-    avatar : string;
+    img : string;
 }
 
 export const Register = ( payload :  RegisterPayload ) => {

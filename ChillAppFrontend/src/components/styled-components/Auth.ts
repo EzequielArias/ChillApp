@@ -39,6 +39,8 @@ export const AuthInputs = styled.input
 
     color : ${RootVariables.__var_white};
 
+    border-bottom : 0.5px solid gray;
+
     &::placeholder {
         color : ${RootVariables.__var_white};
     }

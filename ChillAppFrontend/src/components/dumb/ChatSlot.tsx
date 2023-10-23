@@ -9,10 +9,10 @@ import {
   Hour,
   HourContainer
 } from '../styled-components';
-
+import { Avatars } from '../../assets';
 import { useState } from 'react';
 
-export const ChatSlot = ( { name, message, chatId } : { name : string, message : any[], chatId : string } ) => {
+export const ChatSlot = ( { name, message, chatId, img } : { name : string, message : any[], chatId : string, img : string } ) => {
 
   const [ modal, setModal ] = useState<boolean>(false);
 
@@ -23,7 +23,7 @@ export const ChatSlot = ( { name, message, chatId } : { name : string, message :
       <ImgContainer>
        <ChatIMG 
         alt='' 
-        src='https://i.blogs.es/66b2a4/photo-1511367461989-f85a21fda167/1366_2000.jpeg'
+        src={Avatars.find(avatar => avatar.includes(img))}
         />
       </ImgContainer>
       <UserInfoContainer>

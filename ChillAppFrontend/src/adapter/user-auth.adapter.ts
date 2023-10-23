@@ -5,18 +5,19 @@ export interface AuthResponse {
         name: string;
         email: string;
         isAdmin? : boolean;
+        img : string;
     },
     token : string;
 }
 
 export const AuthAdapter = ( data : AuthResponse ) => {
-
     return {
         user : {
             id : data.user.id,
             name : data.user.name,
             email : data.user.email,
-            isAdmin : data.user.isAdmin ? true : false
+            isAdmin : data.user.isAdmin ? true : false,
+            img : data.user.img
         },
 
         token : data.token

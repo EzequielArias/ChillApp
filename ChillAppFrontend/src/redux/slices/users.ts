@@ -26,13 +26,15 @@ export const UsersSlice = createSlice({
     reducers : {
 
         login : ( state, action : PayloadAction<AuthResponse> ) => {
+
             return {
                 ...state,
                 isAdmin : true,
                 isAuthenticated : true,
                 name : action.payload.user.name,
                 email : action.payload.user.email,
-                id : action.payload.user.id
+                id : action.payload.user.id,
+                img : action.payload.user.img
             }
         },
 

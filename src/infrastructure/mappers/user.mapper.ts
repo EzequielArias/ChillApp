@@ -4,7 +4,7 @@ export class UserMapper {
     // This is a mapper from MongoEntity to a normal javascript object;
     static userEntityFromObject(object : {[key : string] : any}){
 
-        const { id, _id, name , email, password, roles } = object;
+        const { id, _id, name , email, password, roles, img } = object;
 
         if(!_id || !id){
             throw CustomErr.badRequest('Missing ID');
@@ -23,7 +23,8 @@ export class UserMapper {
             name,
             email,
             password,
-            roles
+            roles,
+            img 
         );
     }
 }

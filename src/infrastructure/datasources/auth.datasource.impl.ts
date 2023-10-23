@@ -16,7 +16,7 @@ export class AuthDataSourceImpl implements AuthDataSource {
     
     async register(registerUserDto: RegisterUserDto): Promise<UserEntity> {
 
-        const { name, email, password } = registerUserDto;
+        const { name, email, password, img } = registerUserDto;
 
         try {
             
@@ -27,7 +27,8 @@ export class AuthDataSourceImpl implements AuthDataSource {
             const user = await UserModel.create({
                 name : name,
                 email : email,
-                password : this.hashPassword(password)
+                password : this.hashPassword(password),
+                img : img
             })
 
             await user.save()

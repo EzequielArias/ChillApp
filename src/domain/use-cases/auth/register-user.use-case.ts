@@ -37,7 +37,8 @@ export class RegisterUser implements RegisterUserUseCase {
             user : {
                 id : user.id,
                 name : user.name,
-                email : user.email
+                email : user.email,
+                img : user.img
             }
         }
     }

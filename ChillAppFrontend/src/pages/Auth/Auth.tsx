@@ -30,7 +30,8 @@ export const Auth = () => {
   const initialState = {
     password : "",
     email : "",
-    avatar : ""
+    avatar : "",
+    name : ""
   }
 
   const { form, formChange, setForm } = useForm(initialState);
@@ -84,9 +85,10 @@ export const Auth = () => {
     e.preventDefault();
     
     const formData = {
-        name : form.email.split("@")[0],
+        name : form.name,
         email: form.email,
-        password: form.password
+        password: form.password,
+        img : form.avatar.split("/").at(-1) as string
       };
 
     const jsonData = JSON.stringify(formData);
@@ -94,7 +96,7 @@ export const Auth = () => {
     let tk : string;
     if(auth)
     {
-      const { data } = await callEndpoint(Register(form));
+      const { data } = await callEndpoint(Register(formData));
       dispatch(login(AuthAdapter(data)));
       tk = data.token;
     }else{
@@ -127,6 +129,16 @@ export const Auth = () => {
       </ModalContainer>
       }
       <AuthForm>
+        {
+          auth && 
+          <AuthInputs
+          type="text"
+          name="name"
+          placeholder="Tu nombre"
+          onChange={formChange}
+          value={form.name}
+          />
+        }
         <AuthInputs 
           type="email" 
           name="email" 
@@ -137,7 +149,7 @@ export const Auth = () => {
         <AuthInputs
          type="password" 
          name="password"
-         placeholder="password"
+         placeholder="Password"
          onChange={formChange}
          value={form.password}
          />

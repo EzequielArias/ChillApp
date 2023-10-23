@@ -4,12 +4,16 @@ import {
     InfoContainer,
     SectionContainer,
     SectionItem,
-    ToolsContainer
+    ToolsContainer,
+    SearchInput,
+    DivIcon,
+    DivInput
 } from '../styled-components';
 import { useEffect, useState } from 'react';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import { useLocalStorage } from '../../hooks';
+import { useLocalStorage, useForm } from '../../hooks';
+import { useNavigate } from 'react-router-dom';
 
 export const Navbar = () => {
 
@@ -18,6 +22,11 @@ export const Navbar = () => {
     novedades : false,
     llamadas : false
   })
+  const [ search, setSearch ] = useState(false);
+  const { form, formChange } = useForm({
+    query_search : ""
+  });
+  const navigate = useNavigate();
 
   const { getUserData } = useLocalStorage()
 
@@ -56,6 +65,18 @@ export const Navbar = () => {
     }
   }
   
+  const handleSearchBar = (e : any) => {
+    e.stopPropagation()
+    setSearch(!search)
+  }
+
+  const searchPerson = (e : any ) =>{
+    if(e.key === 'Enter'){
+      console.log(e.target.value)
+      return navigate('/query-result')
+    }
+  }
+
   useEffect(() => {
     
     getUserData()
@@ -67,30 +88,44 @@ export const Navbar = () => {
   },[])
 
   return (
+    <>
     <NavbarContainer>
         <InfoContainer>
           <LogoText to={"/"}>ChillApp</LogoText>
-          <ToolsContainer>
-            <AiOutlineSearch/>
-            <BsThreeDotsVertical/>
+          <ToolsContainer 
+            onClick={handleSearchBar}
+            active={search}
+            >
+              <DivIcon></DivIcon>
+              <DivInput>
+                <input
+                type='text'
+                placeholder='search'
+                name='query_search'
+                onClick={(e) => e.stopPropagation()}
+                onChange={formChange}
+                onKeyDown={searchPerson}
+                />
+              </DivInput>
           </ToolsContainer>
         </InfoContainer>
+        
         <SectionContainer>
           <ul>
             <SectionItem 
-              isActive={selected.chats}
+              isactive={selected.chats}
               onClick={() => handleSelected('chat')}
               >
               Chats
             </SectionItem>
             <SectionItem 
-              isActive={selected.novedades}
+              isactive={selected.novedades}
               onClick={() => handleSelected('novedades')}
               >
               Novedades
             </SectionItem>
             <SectionItem 
-              isActive={selected.llamadas}
+              isactive={selected.llamadas}
               onClick={() => handleSelected('llamadas')}
              >
               Llamadas
@@ -98,5 +133,7 @@ export const Navbar = () => {
           </ul>
         </SectionContainer>
     </NavbarContainer>
+
+  </>
   )
 }

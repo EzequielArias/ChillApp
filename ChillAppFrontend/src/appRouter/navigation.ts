@@ -1,5 +1,5 @@
 
-import { AdminDashboard, Home, NotFound, Auth } from "../pages";
+import { AdminDashboard, Home, NotFound, Auth, Query_Result } from "../pages";
 
 type JSXcomponents = () => JSX.Element;
 
@@ -15,5 +15,6 @@ export const nav : RoutesList[] = [
     { path : '/', isAdmin : false, isAuthenticated : false, name : 'home', element : Home },
     { path : '/admin-dashboard', isAdmin : true, isAuthenticated : true, name : 'admin-dashboard', element : AdminDashboard},
     { path : '*', isAdmin : false, isAuthenticated : false, name : 'not-found', element : NotFound},
-    { path : '/auth', isAdmin : false, isAuthenticated : false, name : 'authentication', element : Auth }
+    { path : '/auth', isAdmin : false, isAuthenticated : false, name : 'authentication', element : Auth },
+    { path : '/query-result', isAdmin : false, isAuthenticated : true, name : 'query-result', element : Query_Result}
 ]

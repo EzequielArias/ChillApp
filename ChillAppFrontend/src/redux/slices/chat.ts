@@ -1,5 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface MessageText {
     user : string;
@@ -12,6 +11,7 @@ interface ChatSlot {
         id : string;    // si el id es igual al from del mensaje significa que el mensaje no es nuestro sino de la persona con la que estamos chateando
         name : string; 
         email : string;
+        img : string;
         messages : MessageText[]
    } 
 } 

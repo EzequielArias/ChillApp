@@ -9,6 +9,7 @@ interface UserToken {
         id : string;
         name : string;
         email : string;
+        img : string;
     };
 }
 
@@ -38,7 +39,8 @@ export class LoginUser implements LoginUserCase {
             user : {
                 id : user.id,
                 name : user.name,
-                email : user.email
+                email : user.email,
+                img : user.img
             }
         }
     }

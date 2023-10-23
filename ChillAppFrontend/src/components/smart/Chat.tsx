@@ -41,6 +41,7 @@ export const Chat = () => {
             name={el.userChat.name}
             message={el.userChat.messages}
             chatId={el.chatId}
+            img={el.userChat.img}
           />
           )
         })) 
