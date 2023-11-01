@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface IQueryUsers {
     id : string;
-    image : string;
+    img : string;
     email : string;
     name : string;
 }
@@ -30,3 +30,5 @@ export const Query_results = createSlice({
         }
     }
 })
+
+export const { getQueryUsers } = Query_results.actions;

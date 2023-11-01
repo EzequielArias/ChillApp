@@ -3,7 +3,6 @@ import { LoadAbort } from '../utilities';
 
 const url = "http://localhost:3100";
 
-
 export const GetUsersByQuery = ( query : string, token : string ) => {
     
     const controller = LoadAbort();
@@ -12,7 +11,7 @@ export const GetUsersByQuery = ( query : string, token : string ) => {
     };
 
     return {
-        call : axios.get(`${url}${query}`, { headers }),
+        call : axios.get(`${url}/search-bar/person${query}`, { headers }),
         controller
     };
 }

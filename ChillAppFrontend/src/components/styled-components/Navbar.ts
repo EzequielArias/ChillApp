@@ -120,6 +120,15 @@ export const InfoContainer = styled.section
     justify-content : space-between;
     align-items : center;
     margin-right : 20px;
+
+    & > svg {
+        font-size : 30px;
+        color : ${RootVariables.__var_white};
+
+        &:hover {
+            cursor : pointer;
+        }
+    }
 `
 
 export const SectionContainer = styled.section 

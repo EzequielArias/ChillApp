@@ -10,8 +10,8 @@ import {
     DivInput
 } from '../styled-components';
 import { useEffect, useState } from 'react';
-import { AiOutlineSearch } from 'react-icons/ai';
-import { BsThreeDotsVertical } from 'react-icons/bs';
+//import { BsThreeDotsVertical } from 'react-icons/bs';
+import { AiOutlineArrowLeft } from 'react-icons/ai';
 import { useLocalStorage, useForm } from '../../hooks';
 import { useNavigate } from 'react-router-dom';
 
@@ -23,6 +23,7 @@ export const Navbar = () => {
     llamadas : false
   })
   const [ search, setSearch ] = useState(false);
+  const [ result, setResult ] = useState(false);
   const { form, formChange } = useForm({
     query_search : ""
   });
@@ -72,9 +73,22 @@ export const Navbar = () => {
 
   const searchPerson = (e : any ) =>{
     if(e.key === 'Enter'){
-      console.log(e.target.value)
-      return navigate('/query-result')
+      
+      const regExEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+      if(regExEmail.test(form.query_search)){
+        
+      setResult(true)
+      return navigate(`/query-result?email=${form.query_search}`);
+      }
+
+      setResult(true)
+      return navigate(`/query-result?name=${form.query_search}`);
     }
+  }
+  const arrowNavigate = () => {
+    setResult(false)
+    navigate('/')
   }
 
   useEffect(() => {
@@ -92,22 +106,32 @@ export const Navbar = () => {
     <NavbarContainer>
         <InfoContainer>
           <LogoText to={"/"}>ChillApp</LogoText>
-          <ToolsContainer 
-            onClick={handleSearchBar}
-            active={search}
-            >
-              <DivIcon></DivIcon>
-              <DivInput>
-                <input
-                type='text'
-                placeholder='search'
-                name='query_search'
-                onClick={(e) => e.stopPropagation()}
-                onChange={formChange}
-                onKeyDown={searchPerson}
-                />
-              </DivInput>
-          </ToolsContainer>
+          {
+            result
+            ? 
+            (
+              <AiOutlineArrowLeft onClick={arrowNavigate}/>
+            )
+            : 
+            (
+              <ToolsContainer 
+              onClick={handleSearchBar}
+              active={search}
+              >
+                <DivIcon></DivIcon>
+                <DivInput>
+                  <input
+                  type='text'
+                  placeholder='search'
+                  name='query_search'
+                  onClick={(e) => e.stopPropagation()}
+                  onChange={formChange}
+                  onKeyDown={searchPerson}
+                  />
+                </DivInput>
+            </ToolsContainer>
+            ) 
+          }
         </InfoContainer>
         
         <SectionContainer>
