@@ -4,7 +4,9 @@ import { ChatsDto,
         Message, 
         MessageDto, 
         MessageRepository,
-        Chat
+        Chat,
+        NewChatDto,
+        NewChat
     } from "../../domain";
 
 
@@ -49,5 +51,16 @@ export class MessageController {
         .execute( chatsDto! )
         .then(( data ) => res.json( data ) )
         .catch( error => this.handleError( error, res ));
+    }
+
+    newChat = ( req : Request, res : Response ) => {
+        const [ error, newChatDto ] = NewChatDto.create( req.body );
+
+        if( error ) return res.status(400).json({ error });
+
+        new NewChat( this.messageRepository )
+        .execute( newChatDto! )
+        .then(( data ) => res.json( data ))
+        .catch(error => this.handleError(error, res));
     }
 }

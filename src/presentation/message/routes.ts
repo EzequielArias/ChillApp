@@ -19,6 +19,8 @@ export class MessageRoutes {
 
         router.get('/get-chats', AuthMiddleware.validateJWT ,controller.getChats)
 
+        router.post('/', controller.newChat )
+
         return router;
     }
 

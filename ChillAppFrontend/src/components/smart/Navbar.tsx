@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react';
 //import { BsThreeDotsVertical } from 'react-icons/bs';
 import { AiOutlineArrowLeft } from 'react-icons/ai';
 import { useLocalStorage, useForm } from '../../hooks';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export const Navbar = () => {
 
@@ -27,7 +27,9 @@ export const Navbar = () => {
   const { form, formChange } = useForm({
     query_search : ""
   });
+
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { getUserData } = useLocalStorage()
 
@@ -64,6 +66,9 @@ export const Navbar = () => {
         }
       })
     }
+
+    if(location.pathname !== "/") navigate("/");
+    setResult(false)
   }
   
   const handleSearchBar = (e : any) => {
@@ -72,6 +77,13 @@ export const Navbar = () => {
   }
 
   const searchPerson = (e : any ) =>{
+
+    setSelected({
+      chats : false,
+      novedades : false,
+      llamadas : false
+    })
+
     if(e.key === 'Enter'){
       
       const regExEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -86,6 +98,7 @@ export const Navbar = () => {
       return navigate(`/query-result?name=${form.query_search}`);
     }
   }
+
   const arrowNavigate = () => {
     setResult(false)
     navigate('/')
@@ -94,7 +107,7 @@ export const Navbar = () => {
   useEffect(() => {
     
     getUserData()
-    
+
     return () => {
 
     }

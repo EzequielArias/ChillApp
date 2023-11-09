@@ -15,6 +15,27 @@ interface IChat extends Document {
 }
 
 
+type Owner = {
+    _id: string;
+    name: string;
+    email: string;
+    img: string;
+  };
+  
+  type Message = {
+    // Define la estructura de un mensaje si es necesario.
+  };
+  
+  type MyObject = {
+    owners: {
+      owner1: Owner;
+      owner2: Owner;
+    };
+    _id: string;
+    messages: Message[];
+    __v: number;
+  };
+
 export class MessageMapper {
    
     static msgEntityFromObject(object : {[key : string] : any }) : MessageEntity {
@@ -41,24 +62,45 @@ export class MessageMapper {
 
     }
 
-    static chatEntityFromObject( object : IChat[] ) : ChatEntity[] {
+    static chatEntityFromObject( object : Document[] )  {
 
-        // Tengo que ver como devuelve los resultados...
-        const cleanChats = object
-        .filter((el) => el._id && el.messages.length !== 0)
-        .map((el) => {
-            return {
-                _id : el._id,
-                owners : el.owners,
-                messages : el.messages.map(el => {
-                    return {
-                        user : el.user,
-                        text : el.text
-                    }
-                })           
-            }
+      // Tengo que ver como devuelve los resultados...
+        const documents = object.map((doc) => {
+            const owners: {
+                owner1: Owner;
+                owner2: Owner;
+              } = {
+                owner1: {
+                  _id: doc.get('owners.owner1._id'),
+                  name: doc.get('owners.owner1.name'),
+                  email: doc.get('owners.owner1.email'),
+                  img: doc.get('owners.owner1.img')
+                },
+                owner2: {
+                  _id: doc.get('owners.owner2._id'),
+                  name: doc.get('owners.owner2.name'),
+                  email: doc.get('owners.owner2.email'),
+                  img: doc.get('owners.owner2.img')
+                },
+              };
+
+              return {
+                  owners,
+                  _id: doc.get('_id'),
+                  messages: doc.get('messages'),
+                  __v: doc.get('__v')
+              };
         })
-        return cleanChats;
 
+        return documents;
+        
+    }
+
+    static newChatEntityFromObject( object : {[key : string] : any} ) : ChatEntity {
+        const { owners, messages, _id } = object;
+
+        return {
+            owners, messages, _id 
+        }
     }
 }

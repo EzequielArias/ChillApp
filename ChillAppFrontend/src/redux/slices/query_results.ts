@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface IQueryUsers {
+export interface IQueryUsers {
     id : string;
     img : string;
     email : string;

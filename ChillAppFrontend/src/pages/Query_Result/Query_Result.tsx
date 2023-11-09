@@ -13,7 +13,7 @@ import { QueryResultContainer,
          SlotUser
         } from "../../components/styled-components";
 import { useEffect } from "react";
-import { Progress_bar } from "../../components";
+import { Progress_bar, Query_result_slot } from "../../components";
 import { StoreType } from "../../redux/store";
 import { Avatars} from '../../assets';
 
@@ -63,12 +63,11 @@ export const Query_Result = () => {
               {
                 results.map((el) => {
                   return (  
-                  <ResultSlot key={el.id}>
-                    <ResultIMG src={Avatars.find(img => img.includes(el.img))} alt=""/>
-                    <SlotLIItemsContainer>
-                      <SlotUser>{el.email}</SlotUser>
-                    </SlotLIItemsContainer>
-                  </ResultSlot>
+                    <Query_result_slot
+                      key={el.id} 
+                      el={el} 
+                      Avatars={Avatars}
+                      />
                   )
                 })
               }

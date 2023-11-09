@@ -16,3 +16,17 @@ export const GetChats = ( token : string ) => {
         controller
     }
 }
+
+export const newChat = ( token : string, object : { userId1 : string, userId2 : string} ) => {
+    
+    const controller = LoadAbort();
+
+    const headers = {
+        Authorization : `Bearer ${token}`
+    }
+
+    return {
+        call : axios.post(`${url}/chat`, object ,{ headers }),
+        controller
+    }
+}
