@@ -55,7 +55,7 @@ export class MessageMapper {
         }
 
         return new MessageEntity(
-            text.at(-1).message,
+            text,
             senderId,
             receiverId
         )

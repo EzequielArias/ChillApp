@@ -19,7 +19,6 @@ export const Chat = () => {
     const fillChats = async () => {
     const { data } = await callEndpoint(GetChats(localStorage.getItem('jwt')!));
     dispatch(getChats(ChatUserAdapter( data, id )))
-    console.log(ChatUserAdapter( data, id ))
     }
 
     fillChats();

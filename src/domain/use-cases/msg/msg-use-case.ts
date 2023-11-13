@@ -16,11 +16,11 @@ export class Message implements MessageUserCase {
 
         
         const msg = await this.MsgRespository.sendMsg( MessageDto );
-        
+
         return {
             message : {
                 owners : [msg.senderId, msg.receiverId],
-                text : MessageDto.text,
+                text : msg.text,
                 date : new Date()        
             }
         }

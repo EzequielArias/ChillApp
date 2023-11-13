@@ -59,6 +59,7 @@ export const ModalMsgContainer = styled.div
     flex-direction : column;
     overflow-y : scroll;
     overflow-x : hidden;
+    scroll : smooth;
 `
 
 interface TextBallon extends React.HTMLAttributes<HTMLSpanElement> {

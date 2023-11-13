@@ -22,6 +22,7 @@ export class Server {
         }
     })
     private readonly msgSocket = new MessageSockets().sockets
+    private users : { userId : string, socket_id : string }[] = []
 
     constructor(options : Options)
     {
@@ -47,36 +48,39 @@ export class Server {
 
         this.io.on('connection', ( socket ) => {
             
-            const userId = socket.id
-
-            socket.join(userId)
-
-            socket.on('is-typing', ( data ) => {
-                //console.log("Del evento is Typing llego : \n" + data )
-                console.log(data)
-                
-                if(data){
-                    socket.emit('is-typing', true)
-                    return
-                }
-
-                socket.emit('is-typing', false)
-                
+            socket.on('new user', ( { userId } ) => {          
+                    const user = {
+                        userId : userId,
+                        socket_id : socket.id
+                    }
+                    this.users.push(user);
+                    this.io.emit('new user', this.users );
             })
 
             socket.on('send-msg', async ( data ) => {
                 
                 try {
+                    const result : any = await this.msgSocket.sendMsg( data );
 
-                    const result = await this.msgSocket.sendMsg( data );
+                    const receiver = this.users.find(el => el.userId === JSON.parse(result).message.owners[1]);
 
-                    socket.emit('receive-msg', JSON.stringify(result))
+                    socket.to(receiver?.socket_id!).emit('receive-msg', JSON.stringify(result));
 
                 } catch (error) {
 
                     console.log(error)
                     
                 }
+            })
+
+            socket.on('is-typing', ({ receiverId, typing }) => {
+                
+                const receiverSocketId = this.users.find((usr) => usr.userId === receiverId)?.socket_id
+                if(receiverSocketId) socket.to(receiverSocketId).emit('is-typing', typing);
+            })
+
+            socket.on('logout', ( userId ) => {
+                this.users = this.users.filter((usr) => usr.userId !== userId )
             })
         })
 

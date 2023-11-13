@@ -19,6 +19,7 @@ import { useForm } from '../../hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import { StoreType } from '../../redux/store';
 import { MessageText, getMessages } from '../../redux/slices';
+import { Avatars } from '../../assets';
 
 const socket = io("http://localhost:5555");
 
@@ -26,16 +27,70 @@ export const ChatModal = ({ setModal, chatId } : { setModal : React.Dispatch<Rea
  
   const { currentOpenChat, chat } = useSelector(( state : StoreType ) => state.chat );
   const { id } = useSelector((state : StoreType) => state.user );
-  const { form, formChange } = useForm<{message : string}>({message : ""})
+  const receiver_data = chat.find((usr) => usr.chatId === chatId)!.userChat;
+  const { form, formChange, setForm } = useForm<{message : string}>({message : ""}, socket, receiver_data)
   const [ typing, setTyping ] = useState(false)
   const [ data, setData ] = useState<MessageText[]>([]);
-  const dispatch = useDispatch();
+  //const dispatch = useDispatch();
+
+
+  const sendMessage = (
+      e :
+      React.KeyboardEvent<HTMLInputElement> | 
+      React.MouseEvent<HTMLButtonElement>
+      ) => {
+        if('key' in e){
+          if(e.key === "Enter"){
+            socket.emit('send-msg', {
+              text : form.message,
+              senderId : id,
+              receiverId : receiver_data.id
+            })
+          setForm({ message : ""})
+          setData(( prev ) => {
+          return [
+            ...prev,
+            {
+              user : id,
+              text :  form.message
+            }
+          ]
+        })
+          }
+        } else if ('button' in e){
+          socket.emit('send-msg', {
+            text : form.message,
+            senderId : id,
+            receiverId : receiver_data.id
+          })
+          setForm({ message : ""})
+          setData(( prev ) => {
+            return [
+              ...prev,
+              {
+                user : id,
+                text :  form.message
+              }
+            ]
+          })
+        }
+
+        const messagesContainer = document.getElementById('messageContainer');
+
+        if(messagesContainer){
+          messagesContainer.scrollTop = messagesContainer.scrollHeight
+        }
+      }
 
   useEffect(() => {
     
     // hay que traer la logica de el reduxSlice y pasarla a un state normal de react
 
     const currentChat = chat.find( el => el.chatId === chatId )?.userChat.messages;
+
+    socket.emit('new user', {
+      userId : id
+    })
 
     if(currentChat){
       setData(currentChat)
@@ -60,7 +115,7 @@ export const ChatModal = ({ setModal, chatId } : { setModal : React.Dispatch<Rea
 
               return newData
             })
-    })
+        })
 
     return () => {
       socket.off('is-typing')
@@ -68,23 +123,22 @@ export const ChatModal = ({ setModal, chatId } : { setModal : React.Dispatch<Rea
     }
   },[])
 
-  const sendMessage = () => socket.emit('send-msg', {
-    text : form.message,
-    senderId : id,
-    receiverId : chat.find((el) => el.chatId === chatId )?.userChat.id
-  })
-
   return (
     <ModalBoxContainer>
         <ModalMainBox>
 
           <ModalHeader>
-            <ModalRollBack onClick={() => setModal(false)}> <AiOutlineArrowLeft/> </ModalRollBack>
-            <ModalPersonName>Ezequiel Arias</ModalPersonName>
-            <ModalIMG src='https://static.vecteezy.com/system/resources/thumbnails/002/002/403/small/man-with-beard-avatar-character-isolated-icon-free-vector.jpg' alt='Pwned'/>
+            <ModalRollBack onClick={() => {
+              setModal(false)
+              socket.emit('logout', id)
+            }}> <AiOutlineArrowLeft/> </ModalRollBack>
+            <ModalPersonName>{receiver_data.name}</ModalPersonName>
+            <ModalIMG src={
+              Avatars.find((el) => el.includes(receiver_data.img))
+            } alt='Pwned'/>
           </ModalHeader>
 
-          <ModalMsgContainer>
+          <ModalMsgContainer id='messageContainer'>
             {
               data.map((el, index) => {
                 return (
@@ -104,6 +158,7 @@ export const ChatModal = ({ setModal, chatId } : { setModal : React.Dispatch<Rea
             name='message'
             value={form.message}
             onChange={formChange}
+            onKeyDown={sendMessage}
             />
             <ModalSendButton onClick={sendMessage}> <BiSolidRightArrow/> </ModalSendButton>
           </ModalKeyboardContainer>

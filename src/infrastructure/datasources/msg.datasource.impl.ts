@@ -108,8 +108,10 @@ export class MessageDatasourceImpl implements MessageDatasource {
 
         await exists.save();
 
+        const lastMessage = exists.messages[exists.messages.length - 1]
+
         return MessageMapper.msgEntityFromObject({
-            text : exists.messages,
+            text : lastMessage.text,
             senderId,
             receiverId
         })
