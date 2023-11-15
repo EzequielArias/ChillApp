@@ -93,10 +93,12 @@ export const ModalKeyboardContainer = styled.div
 export const ModalInput = styled.input 
 `
     width : 90%;
-    border-radius : 15px;
+    border-radius : 0 15px 15px 0;
     font-size : 15px;
     outline : none;
     padding-left : 5px;
+    border : 1px solid ${RootVariables.__var_gray};
+    border-left : 1px solid ${RootVariables.__var_white};
 
 `
 
@@ -130,5 +132,21 @@ export const ModalRollBack = styled.span
             transition : 0.2s;
             cursor : pointer;
         }
+    }
+`
+
+export const EmojiContainer = styled.div 
+`
+    display : flex;
+    justify-content : center;
+    align-items : center;
+    background : ${RootVariables.__var_white};
+    border-radius: 50% 0% 0% 50%;
+    border : 1px solid ${RootVariables.__var_gray};
+    border-right : 1px solid ${RootVariables.__var_white};
+    padding-left : 5px;
+
+    &:hover {
+        cursor : pointer;
     }
 `

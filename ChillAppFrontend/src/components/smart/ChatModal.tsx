@@ -12,14 +12,17 @@ import { ModalBoxContainer,
          ModalPersonName, 
          ModalRollBack, 
          ModalSendButton, 
-         ModalTextBallon
+         ModalTextBallon,
+         EmojiContainer
         } from "../styled-components/ChatModal";
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from '../../hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import { StoreType } from '../../redux/store';
 import { MessageText, getMessages } from '../../redux/slices';
 import { Avatars } from '../../assets';
+import Pickers, { EmojiClickData } from 'emoji-picker-react';
+import { CiFaceSmile } from "react-icons/ci";
 
 const socket = io("http://localhost:5555");
 
@@ -31,6 +34,7 @@ export const ChatModal = ({ setModal, chatId } : { setModal : React.Dispatch<Rea
   const { form, formChange, setForm } = useForm<{message : string}>({message : ""}, socket, receiver_data)
   const [ typing, setTyping ] = useState(false)
   const [ data, setData ] = useState<MessageText[]>([]);
+  const [ emojiPicker, setEmojiPicker ] = useState(false);
   //const dispatch = useDispatch();
 
 
@@ -80,12 +84,18 @@ export const ChatModal = ({ setModal, chatId } : { setModal : React.Dispatch<Rea
         if(messagesContainer){
           messagesContainer.scrollTop = messagesContainer.scrollHeight
         }
-      }
+  }
+
+  const onEmojiClick = (emojiObject : EmojiClickData | React.MouseEvent<HTMLDivElement> ) => {
+    setEmojiPicker(!emojiPicker);
+
+    if(!('emoji' in emojiObject)) return
+
+    if(emojiObject && emojiObject.emoji) setForm( prev => { return { message : prev.message + emojiObject.emoji} })
+  }
 
   useEffect(() => {
     
-    // hay que traer la logica de el reduxSlice y pasarla a un state normal de react
-
     const currentChat = chat.find( el => el.chatId === chatId )?.userChat.messages;
 
     socket.emit('new user', {
@@ -151,8 +161,10 @@ export const ChatModal = ({ setModal, chatId } : { setModal : React.Dispatch<Rea
 
           <span>{ typing ? "escribiendo..." : ""}</span>
           </ModalMsgContainer>
-
           <ModalKeyboardContainer>
+            <EmojiContainer onClick={onEmojiClick}>
+              <CiFaceSmile/>
+            </EmojiContainer>
             <ModalInput
             type='text'
             name='message'
@@ -162,7 +174,7 @@ export const ChatModal = ({ setModal, chatId } : { setModal : React.Dispatch<Rea
             />
             <ModalSendButton onClick={sendMessage}> <BiSolidRightArrow/> </ModalSendButton>
           </ModalKeyboardContainer>
-
+          { emojiPicker && <Pickers width={'100%'} onEmojiClick={onEmojiClick}/> }
         </ModalMainBox>
     </ModalBoxContainer>
   )
