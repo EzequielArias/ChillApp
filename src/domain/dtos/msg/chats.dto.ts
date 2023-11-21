@@ -21,3 +21,20 @@ export class ChatsDto {
         ]
     }
 }
+
+export class GetChatByIdDto {
+    constructor(
+        public id : string
+    ){}
+
+    static create(object : {[key : string] : any}) : [ string?, GetChatByIdDto? ] {
+        const { id } = object;
+
+        if(!id) return ["Should be an ID here"];
+
+        return [
+            undefined,
+            new GetChatByIdDto( id )
+        ]
+    }
+}

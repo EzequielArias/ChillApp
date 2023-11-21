@@ -40,7 +40,9 @@ export class MessageMapper {
    
     static msgEntityFromObject(object : {[key : string] : any }) : MessageEntity {
 
-        const { text, senderId, receiverId } = object;
+        const { text, senderId, receiverId, id } = object;
+
+        if(!id) throw CustomErr.badRequest("El mensaje debe llevar un ID");
 
         if(!text) throw CustomErr.badRequest('Missing message');
 
@@ -48,6 +50,7 @@ export class MessageMapper {
 
         if( text.length < 1 ){
             return new MessageEntity(
+                id,
                 text[0].message,
                 senderId,
                 receiverId
@@ -55,6 +58,7 @@ export class MessageMapper {
         }
 
         return new MessageEntity(
+            id,
             text,
             senderId,
             receiverId
@@ -102,5 +106,32 @@ export class MessageMapper {
         return {
             owners, messages, _id 
         }
+    }
+
+    static chatByIdFromObject ( object : Document ) : ChatEntity {
+      
+      const owners: {
+        owner1: Owner;
+        owner2: Owner;
+      } = {
+        owner1: {
+          _id: object.get('owners.owner1._id'),
+          name: object.get('owners.owner1.name'),
+          email: object.get('owners.owner1.email'),
+          img: object.get('owners.owner1.img')
+        },
+        owner2: {
+          _id: object.get('owners.owner2._id'),
+          name: object.get('owners.owner2.name'),
+          email: object.get('owners.owner2.email'),
+          img: object.get('owners.owner2.img')
+        },
+      };
+
+      return {
+          owners,
+          _id: object.get('_id'),
+          messages: object.get('messages')
+      };
     }
 }

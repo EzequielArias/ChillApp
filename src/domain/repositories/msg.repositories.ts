@@ -1,5 +1,5 @@
-import { ChatsDto, MessageDto, NewChatDto } from "../dtos";
-import { ChatEntity, MessageEntity } from "../entities";
+import { ChatsDto, DeleteMessageDto, MessageDto, NewChatDto, GetChatByIdDto, EditMsgDto } from "../dtos";
+import { ChatEntity, DeleteMessageEntity, MessageEntity } from "../entities";
 
 export abstract class MessageRepository {
    
@@ -8,4 +8,10 @@ export abstract class MessageRepository {
     abstract getChats( ChatsDto : ChatsDto ) : Promise<ChatEntity[]>
 
     abstract newChat( NewChatDto : NewChatDto) : Promise<ChatEntity>
+
+    abstract deleteMsg ( MessageDto : DeleteMessageDto ) : Promise<DeleteMessageEntity>
+
+    abstract getByIdChat ( GetChatByIdDto : GetChatByIdDto) : Promise<ChatEntity>
+ 
+    abstract editMsg ( EditMsg : EditMsgDto ) : Promise<MessageEntity>
 }

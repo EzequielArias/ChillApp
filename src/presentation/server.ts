@@ -3,7 +3,6 @@ import http from 'http';
 import cors from 'cors';
 import { Server as SocketIo  } from 'socket.io';
 import { MessageSockets } from './message/sockets';
-import { Socket } from 'dgram';
 
 interface Options {
     port : number;
@@ -54,6 +53,7 @@ export class Server {
                         socket_id : socket.id
                     }
                     this.users.push(user);
+                    
                     this.io.emit('new user', this.users );
             })
 
@@ -63,9 +63,9 @@ export class Server {
                     const result : any = await this.msgSocket.sendMsg( data );
 
                     const receiver = this.users.find(el => el.userId === JSON.parse(result).message.owners[1]);
-
                     socket.to(receiver?.socket_id!).emit('receive-msg', JSON.stringify(result));
-
+                   // socket.emit('receive-msg', JSON.stringify(result));
+                    
                 } catch (error) {
 
                     console.log(error)

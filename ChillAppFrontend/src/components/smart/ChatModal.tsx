@@ -17,25 +17,30 @@ import { ModalBoxContainer,
         } from "../styled-components/ChatModal";
 import React, { useEffect, useState } from 'react';
 import { useForm } from '../../hooks';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { StoreType } from '../../redux/store';
-import { MessageText, getMessages } from '../../redux/slices';
+import { Message } from '../../redux/slices';
 import { Avatars } from '../../assets';
 import Pickers, { EmojiClickData } from 'emoji-picker-react';
 import { CiFaceSmile } from "react-icons/ci";
+//import { FiChevronDown } from "react-icons/fi";
+import { ChatMessage } from '..';
+import { useFetchAndLoad } from '../../hooks';
+import { getById } from '../../services';
 
 const socket = io("http://localhost:5555");
 
 export const ChatModal = ({ setModal, chatId } : { setModal : React.Dispatch<React.SetStateAction<boolean>>, chatId : string}) => {
  
-  const { currentOpenChat, chat } = useSelector(( state : StoreType ) => state.chat );
+  const tk = localStorage.getItem('jwt') as string;
+  const { chat } = useSelector(( state : StoreType ) => state.chat );
   const { id } = useSelector((state : StoreType) => state.user );
   const receiver_data = chat.find((usr) => usr.chatId === chatId)!.userChat;
   const { form, formChange, setForm } = useForm<{message : string}>({message : ""}, socket, receiver_data)
   const [ typing, setTyping ] = useState(false)
-  const [ data, setData ] = useState<MessageText[]>([]);
+  const [ data, setData ] = useState<Message[]>([]);
   const [ emojiPicker, setEmojiPicker ] = useState(false);
-  //const dispatch = useDispatch();
+  const { callEndpoint } = useFetchAndLoad();
 
 
   const sendMessage = (
@@ -55,6 +60,7 @@ export const ChatModal = ({ setModal, chatId } : { setModal : React.Dispatch<Rea
           return [
             ...prev,
             {
+              _id : "qasd",
               user : id,
               text :  form.message
             }
@@ -72,6 +78,7 @@ export const ChatModal = ({ setModal, chatId } : { setModal : React.Dispatch<Rea
             return [
               ...prev,
               {
+                _id : "qasd",
                 user : id,
                 text :  form.message
               }
@@ -94,31 +101,34 @@ export const ChatModal = ({ setModal, chatId } : { setModal : React.Dispatch<Rea
     if(emojiObject && emojiObject.emoji) setForm( prev => { return { message : prev.message + emojiObject.emoji} })
   }
 
+
   useEffect(() => {
     
-    const currentChat = chat.find( el => el.chatId === chatId )?.userChat.messages;
+    const fillChat = async () => {
+      const { data } = await callEndpoint(getById(tk, chatId))
+      setData(data.messages)
+    } 
+
+    fillChat()
 
     socket.emit('new user', {
       userId : id
     })
-
-    if(currentChat){
-      setData(currentChat)
-    }
-
-    socket.on('is-typing', (data) => {
+  
+    socket.on('is-typing', ( data ) => {
       setTyping(data)
     })
 
     socket.on('receive-msg', ( data ) => {
       const json = JSON.parse(data),
             object = JSON.parse(json)
-
+            console.log(object);
             setData(prev => {
 
               const newData = [...prev]
 
               newData.push({
+                _id : object.id,
                 user : object.message.owners[0],
                 text : object.message.text
               }) 
@@ -126,12 +136,13 @@ export const ChatModal = ({ setModal, chatId } : { setModal : React.Dispatch<Rea
               return newData
             })
         })
-
     return () => {
-      socket.off('is-typing')
-      socket.off('receive-msg')
+      socket.off('is-typing');
+      socket.off('receive-msg');
+      socket.emit('logout', id);
     }
   },[])
+
 
   return (
     <ModalBoxContainer>
@@ -153,12 +164,18 @@ export const ChatModal = ({ setModal, chatId } : { setModal : React.Dispatch<Rea
               data.map((el, index) => {
                 return (
                   <ModalTextBallon key={index} isMyMessage={id === el.user ? false : true}>
-                    <ModalMessage> {el.text} </ModalMessage>
+                    <ModalMessage> 
+                      <span>{el.text}</span>
+                      {
+                        id === el.user
+                        ? (<ChatMessage id={el._id} chatId={chatId} setData={setData} msg={el.text}/>)
+                        : ""
+                      }
+                    </ModalMessage>
                   </ModalTextBallon>
                 )
-              })
+              }) 
             }
-
           <span>{ typing ? "escribiendo..." : ""}</span>
           </ModalMsgContainer>
           <ModalKeyboardContainer>

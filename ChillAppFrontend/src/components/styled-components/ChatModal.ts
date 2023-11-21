@@ -10,7 +10,7 @@ export const ModalBoxContainer = styled.div
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index : 999999;
+    z-index : 3;
 
     top : 0;
     left : 0;
@@ -76,11 +76,14 @@ export const ModalTextBallon = styled.span<TextBallon>
 
 export const ModalMessage = styled.p 
 `
+    position : relative;
     padding : 10px;
     border-radius : 10px;
     background-color : black;
     width : 50%;
     color : white;
+    display : flex;
+    justify-content : space-between;
 `
 
 export const ModalKeyboardContainer = styled.div 
@@ -149,4 +152,31 @@ export const EmojiContainer = styled.div
     &:hover {
         cursor : pointer;
     }
+`
+
+export const DropMenu = styled.ul 
+`
+    background-color : black;
+
+    position : absolute;
+    left : 87%;
+    top : 33px;
+    cursor : pointer;
+    z-index : 555;
+`
+
+export const ItemList = styled.li 
+`
+    list-style : none;
+    padding : 15px;
+
+    &:hover {
+        background-color : ${RootVariables.__var_lightPurple};
+        transition : 0.3s;
+    }
+`
+
+export const ItemText = styled.span 
+`
+
 `

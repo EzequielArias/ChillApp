@@ -6,7 +6,10 @@ import { ChatsDto,
         MessageRepository,
         Chat,
         NewChatDto,
-        NewChat
+        NewChat,
+        DeleteMessageDto,
+        GetChatByIdDto,
+        EditMsgDto
     } from "../../domain";
 
 
@@ -17,6 +20,7 @@ export class MessageController {
     ){}
 
     private handleError = (error : unknown, res : Response) => {
+        console.log(error)
         if(error instanceof CustomErr)
         {
             return res.status(error.statusCode).json({ error : error.message });
@@ -37,7 +41,10 @@ export class MessageController {
         return new Promise(( resolve, reject ) => {
             new Message( this.messageRepository )
             .execute( messageDto! )
-            .then(( data ) => resolve(JSON.stringify(data)))
+            .then(( data ) => {
+                console.log(data)
+                resolve(JSON.stringify(data))
+            })
             .catch( error => reject(JSON.stringify({ error : error.message})) )
         })
     }
@@ -62,5 +69,44 @@ export class MessageController {
         .execute( newChatDto! )
         .then(( data ) => res.json( data ))
         .catch(error => this.handleError(error, res));
+    }
+
+    deleteMsg = ( req : Request, res : Response ) => {
+        const [ error, deleteMessageDto ] = DeleteMessageDto.create({ id : req.params.messageId, chatId : req.params.chatId });
+       
+        if(error) return JSON.stringify({ error });
+
+        return new Message( this.messageRepository )
+               .remove( deleteMessageDto!)
+               .then(data => res.json(data)) 
+               .catch(error => this.handleError( error, res ))
+    }
+
+    chatById = ( req : Request, res : Response ) => {
+
+        const [ error , getChatById ] = GetChatByIdDto.create( { id : req.params.chatId } );
+
+        if(error) return res.json({ error });
+
+        return new Message( this.messageRepository )
+            .getChatById( getChatById! )
+            .then(data => res.json(data))
+            .catch(error => this.handleError( error, res ));
+    }
+
+    editMsg = ( req : Request, res : Response ) => {
+        
+        const [ error, editMsgDto ] = EditMsgDto.create({ chatId : req.params.chatId, messageId : req.params.messageId, data : req.body.data })
+        console.log(editMsgDto)
+        console.log(error)
+        if(error) return res.json({ error });
+
+        return new Message( this.messageRepository )
+            .editMsg( editMsgDto! )
+            .then( data => {
+                console.log(data)
+                res.json(data)
+            })
+            .catch(error => this.handleError( error, res));
     }
 }

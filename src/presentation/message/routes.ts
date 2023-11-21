@@ -15,11 +15,18 @@ export class MessageRoutes {
             messageRepository
         )
 
-        router.post('/send-msg', controller.sendMsg)
+        router.post('/send-msg', AuthMiddleware.validateJWT , controller.sendMsg);
 
-        router.get('/get-chats', AuthMiddleware.validateJWT ,controller.getChats)
+        router.get('/get-chats', AuthMiddleware.validateJWT , controller.getChats);
 
-        router.post('/', controller.newChat )
+        router.get('/:chatId', AuthMiddleware.validateJWT , controller.chatById );
+
+        router.post('/', AuthMiddleware.validateJWT , controller.newChat );
+
+        router.put('/:chatId/:messageId', AuthMiddleware.validateJWT, controller.editMsg );
+
+        router.delete('/:messageId/:chatId', AuthMiddleware.validateJWT, controller.deleteMsg );
+
 
         return router;
     }
