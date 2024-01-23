@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import { RegisterUserDto, LoginUserDto } from "../../domain/dtos/auth/"
 import { AuthRepository, CustomErr, LoginUser, RegisterUser } from "../../domain/";
 import { UserModel } from "../../databases/mongodb";
+import { Logger } from "../utils/Logger";
 
 export class AuthController {
 
@@ -9,37 +10,34 @@ export class AuthController {
         private readonly authRepository : AuthRepository
     ){}
 
-    private handleError = (error : unknown, res : Response) => {
-        if(error instanceof CustomErr)
-        {
-            return res.status(error.statusCode).json({ error : error.message });
-        }
-        /**
-            Hay que agregar un user logger como winston.
-            Para tener una base de datos con registros de errores
-         */
-        console.log(error)
-        return res.status(500).json({ error : 'Internal Server Error'});
-    }
-
     registerUser = (req : Request, res : Response) => {
         const [error, registerUserDto ] = RegisterUserDto.create( req.body );
-        if( error ) return res.status(400).json({ error });
 
         new RegisterUser(this.authRepository)
         .execute( registerUserDto! )
-        .then(( data ) => res.json(data) )
-        .catch( error => this.handleError( error, res ));
+        .then(( data ) => {
+            if(error) throw error;
+            res.json(data)
+        })
+        .catch( (error) => {
+            Logger.error(error)
+            CustomErr.handleError(error, res)
+        });
     } 
 
     loginUser = (req : Request, res : Response) => {
         const [ error, loginUserDto ] = LoginUserDto.create( req.body );
-        if( error ) return res.status(400).json({ error });
 
         new LoginUser(this.authRepository)
             .execute( loginUserDto! )
-            .then((data) => res.json( data ))
-            .catch( error => this.handleError( error, res));
+            .then((data) => {
+                if(error) throw error;
+                res.json( data )
+            })
+            .catch( error => {
+                Logger.error(error)
+                CustomErr.handleError(error, res)
+            });
     }
 
     getUsers = (req : Request , res : Response) => {
@@ -48,6 +46,9 @@ export class AuthController {
                 users,
                 user : req.body.user
             }))
-            .catch(error => this.handleError( error, res));
+            .catch(error => {
+                Logger.error(error)
+                CustomErr.handleError(error, res)
+            });
     }
 }

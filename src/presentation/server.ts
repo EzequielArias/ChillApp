@@ -3,6 +3,7 @@ import http from 'http';
 import cors from 'cors';
 import { Server as SocketIo  } from 'socket.io';
 import { MessageSockets } from './message/sockets';
+import { AppMiddleware } from './middleware/app.middleware';
 
 interface Options {
     port : number;
@@ -37,6 +38,7 @@ export class Server {
         this.app.use(cors({
             origin : "http://localhost:5173"
         }));
+        this.app.use(AppMiddleware.Log)
 
         this.app.use(this.routes);
         

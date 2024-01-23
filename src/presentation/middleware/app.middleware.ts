@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { Jwt } from "../../config";
 import { UserModel } from "../../databases/mongodb";
+import { Logger } from "../utils/Logger";
 
 export class AuthMiddleware {
 
@@ -31,5 +32,22 @@ export class AuthMiddleware {
             res.status(500).json({ error : 'Internal Server Error'});
         }
 
+    }
+}
+/**
+  Crear un logger con todo lo que que almacene
+  - Informacion sensible de quien hizo la peticion.
+  - Errores detallados por componente.
+  - Directorio con carpetas dentro con cada componente respectivo del error.
+ */
+export class AppMiddleware {
+    public static Log = (req : Request, res : Response, next : NextFunction ) => {
+        Logger.log(`${req.method} ${req.originalUrl} \nClient : ${req.ip} \nMachine ${req.headers["user-agent"]}\n`);
+        next();
+    } 
+
+    public static ErrorLog = ( req : Request, res : Response, next : NextFunction, message : string ) => {
+        Logger.error(message);
+        next();
     }
 }
