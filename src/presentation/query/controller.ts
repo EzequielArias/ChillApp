@@ -3,7 +3,6 @@ import { Response, Request } from 'express';
 import { Logger } from "../utils/Logger";
 
 export class QueryController {
-
     constructor(
         private readonly queryRepository : QueryRepository
     ){}

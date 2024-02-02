@@ -2,6 +2,7 @@ import { Router } from "express";
 import { AuthRoutes } from "./auth/routes";
 import { MessageRoutes } from "./message/routes";
 import { QueryRoutes } from "./query/routes";
+import { ChillNewsRoutes } from "./chillNews/routes";
 
 export class AppRoutes {
     static get routes() : Router {
@@ -13,6 +14,8 @@ export class AppRoutes {
         router.use("/chat", MessageRoutes.routes );
 
         router.use('/search-bar', QueryRoutes.routes );
+
+        router.use('/chill-news', ChillNewsRoutes.routes );
 
         return router;
     }

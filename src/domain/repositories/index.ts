@@ -2,3 +2,4 @@
 export * from './auth.repositiries';
 export * from './msg.repositories';
 export * from './query.repositories';
+export * from './chillNews.repositories';

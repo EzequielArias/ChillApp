@@ -2,3 +2,4 @@
 export * from './auth.datasource';
 export * from './msg.datasource';
 export * from './query.datasource';
+export * from './chillNews.datasource';
