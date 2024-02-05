@@ -12,4 +12,4 @@ export * from './ChillNews.modal';
   "updatedAt": "2024-02-02T20:49:35.550Z",
   "__v": 0
 }
- */
+ */ 

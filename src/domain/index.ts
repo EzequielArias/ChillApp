@@ -4,3 +4,4 @@ export * from './erros'
 export * from './datasource'
 export * from './repositories'
 export * from './use-cases';
+export * from './interfaces';
