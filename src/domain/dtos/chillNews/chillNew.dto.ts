@@ -3,7 +3,7 @@ export class ChillNewsDto {
     constructor(
         public userId : string,
         public avatar : string,
-        public chillNewContent : string
+        public content : string
     ){}
 
     static create(object : {[key : string] : any}) : [string?, ChillNewsDto?] {

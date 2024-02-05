@@ -1,6 +1,7 @@
 import { ChillNewsRepository, ChillNewsDto, ChillNew, CustomErr } from "../../domain";
 import { Request, Response } from "express";
 import { Logger } from "../utils/Logger";
+import * as mongoose  from "mongoose";
 
 export class ChillNewsController {
     constructor(
@@ -53,10 +54,11 @@ export class ChillNewsController {
         });
         
     }
+
     getOne = ( req : Request, res : Response ) => {
 
         const { id } = req.params
-
+        
         new ChillNew( this.chillNewsRepository )
         .getOne( id! )
         .then(( data ) => {
